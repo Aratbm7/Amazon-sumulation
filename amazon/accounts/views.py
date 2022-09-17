@@ -3,8 +3,9 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .serializers import CustomerSerializer
-from .models import Customer
+from .serializers import CustomerSerializer, MerchantSerializer
+from .models import Customer, Merchant
+from rest_framework import status
 
 
 class CustomerViewset(ModelViewSet):
@@ -27,7 +28,6 @@ class CustomerViewset(ModelViewSet):
             print(request.data)
 
             return Response(serializer.data)
-        return Response(serializer.data)
 
     # @action(detail=False, permission_classes=[IsAuthenticated], methods=['GET', 'PUT'], serializer_class=AddressSerializer)
     # def address(self, request):
@@ -47,3 +47,26 @@ class CustomerViewset(ModelViewSet):
     #         serializer.save()
     #         return Response(serializer.data)
     #     return Response(serializer.data)
+
+
+class MerchantViewset(ModelViewSet):
+    queryset = Merchant.objects.all()
+    serializer_class = MerchantSerializer
+    permission_classes = [IsAdminUser]
+
+    @action(detail=False, methods=['GET', 'PUT'], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        merchent = Merchant.objects.get(
+            user_id=request.user.id)
+        if request.method == 'GET':
+            serializer = MerchantSerializer(merchent)
+            return Response(serializer.data)
+        elif request.method == 'PUT':
+            serializer = MerchantSerializer(
+                merchent, data=request.data)
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data)
+        # elif request.method == 'DELETE':
+        #     Merchant.objects.get(user_id=request.user.id).delete()
+        #     return Response(status=status.HTTP_204_NO_CONTENT)

@@ -26,7 +26,7 @@ class Customer(models.Model):
                              )
     placed_at = models.DateField(auto_now=True)
 
-    merchant = models.BooleanField(default=False)
+    is_merchant_user = models.BooleanField(default=False)
 
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -45,3 +45,15 @@ class Address(models.Model):
 
     def __str__(self):
         return f'{self.city}, {self.street}'
+
+
+class Merchant(models.Model):
+    store_name = models.CharField(max_length=255, null=True, blank=True)
+    cart_id = models.CharField(max_length=255, null=True, blank=True)
+    card_image_front = models.ImageField(
+        upload_to='midea/images/merchant/front', validators=[image_size], null=True, blank=True)
+    card_image_back = models.ImageField(
+        upload_to='midea/images/merchant/back', validators=[image_size], null=True, blank=True)
+    is_active_in_merchant = models.BooleanField(default=False)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

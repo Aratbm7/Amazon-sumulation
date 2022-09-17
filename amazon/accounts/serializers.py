@@ -4,18 +4,18 @@ from phonenumber_field.widgets import PhoneNumberPrefixWidget
 from drf_writable_nested.mixins import NestedUpdateMixin
 # from drf_writable_nested.serializers import WritableNestedModelSerializer
 
-from . import models
+from .models import Customer, Address, Merchant
 
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Address
+        model = Address
         fields = ['id', 'city', 'street', 'code']
 
     # def create(self, validated_data):
     #     customer_id = models.Customer.objects.get(
     #         id=validated_data['customer_id']).id
-    #     return models.Address.objects.create(**validated_data, customer_id=customer_id)
+    #     return Address.objects.create(**validated_data, customer_id=customer_id)
 
     # def update(self, instance, validated_data):
     #     instance.city = validated_data.get('city', instance.city)
@@ -36,8 +36,8 @@ class CustomerSerializer(NestedUpdateMixin, serializers.ModelSerializer):
     address = AddressSerializer()
 
     class Meta:
-        model = models.Customer
-        fields = ['id', 'image', 'birth_day', 'phone', 'merchant',
+        model = Customer
+        fields = ['id', 'image', 'birth_day', 'phone', 'is_merchant_user',
                   'membership', 'user_id', 'address']
         widgets = {
             'phone': PhoneNumberPrefixWidget(initial='IR'),
@@ -52,3 +52,10 @@ class CustomerSerializer(NestedUpdateMixin, serializers.ModelSerializer):
         address.code = address_data.get('code', address.code)
         address.save()
         return super().update(instance, validated_data)
+
+
+class MerchantSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Merchant
+        fields = ['id', 'store_name', 'cart_id',
+                  'card_image_front', 'card_image_back', ]

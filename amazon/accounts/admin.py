@@ -9,8 +9,8 @@ from .models import Address, Customer
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ['id', 'full_name', 'membership',
-                    'merchant', 'phone', 'birth_day', 'customer_address', 'user_info', 'image']
-    list_editable = ['membership', 'merchant']
+                    'is_merchant_user', 'phone', 'birth_day', 'customer_address', 'user_info', 'image']
+    list_editable = ['membership', 'is_merchant_user']
     list_select_related = ['user', 'address']
     ordering = ['id']
 
