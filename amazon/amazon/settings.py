@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 import os
+import socket
 from datetime import timedelta
 from pathlib import Path
 
@@ -43,7 +44,8 @@ INSTALLED_APPS = [
     'djoser',
     # 'address',
     'core',
-    'accounts'
+    'accounts',
+    'products'
 ]
 
 
@@ -145,6 +147,8 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
+MERCHANT_MODEL = 'accounts.Merchant'
+CUSTOMER_MODEL = 'accounts.Customer'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -179,3 +183,9 @@ INTERNAL_IPS = [
     "127.0.0.1",
     # ...
 ]
+
+try:
+    HOST_NAME = socket.gethostname()
+
+except:
+    HOST_NAME = 'localhost'

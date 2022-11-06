@@ -1,8 +1,8 @@
 
 from django.db import models
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from .validators import image_size
-# from address.models import AddressField
 from phonenumber_field.modelfields import PhoneNumberField
 
 
@@ -57,3 +57,6 @@ class Merchant(models.Model):
     is_active_in_merchant = models.BooleanField(default=False)
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.store_name}'

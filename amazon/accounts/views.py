@@ -1,18 +1,18 @@
 
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsAdminUserAndNotMerchant
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .serializers import CustomerSerializer, MerchantSerializer
 from .models import Customer, Merchant
-from rest_framework import status
 
 
 class CustomerViewset(ModelViewSet):
     http_method_names = ['get', 'put', 'patch', 'option', 'header']
     queryset = Customer.objects.select_related('address').all()
     serializer_class = CustomerSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUserAndNotMerchant]
 
     @action(detail=False, methods=['GET', 'PUT'], permission_classes=[IsAuthenticated])
     def me(self, request):
@@ -50,9 +50,10 @@ class CustomerViewset(ModelViewSet):
 
 
 class MerchantViewset(ModelViewSet):
+    http_method_names = ['get', 'delete', 'header', 'option', 'put']
     queryset = Merchant.objects.all()
     serializer_class = MerchantSerializer
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAdminUserAndNotMerchant]
 
     @action(detail=False, methods=['GET', 'PUT'], permission_classes=[IsAuthenticated])
     def me(self, request):

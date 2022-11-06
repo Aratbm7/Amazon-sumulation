@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.urls import reverse
 from django.utils.html import format_html, urlencode
 
-from .models import Address, Customer
+from .models import Address, Customer, Merchant
 
 
 @admin.register(Customer)
@@ -39,7 +39,7 @@ class CustomerAdmin(admin.ModelAdmin):
 # Register your models here.
 
 
-@ admin.register(Address)
+@admin.register(Address)
 class AdressAdmin(admin.ModelAdmin):
     list_display = ['id', 'city', 'street', 'code', 'customer_username']
     ordering = ['city']
@@ -53,3 +53,10 @@ class AdressAdmin(admin.ModelAdmin):
                }))
 
         return format_html(f'<a href="{url}">{address.customer.user.username}</a>')
+
+
+@admin.register(Merchant)
+class Merchant(admin.ModelAdmin):
+    list_display = [f.name for f in Merchant._meta.get_fields()
+                    if (f.name != 'products')]
+    list_select_related = ['user']
